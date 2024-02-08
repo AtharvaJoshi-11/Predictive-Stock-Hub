@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Prediction App</title>
+</head>
+<body>
+    <h1>Welcome to the Stock Prediction App</h1>
+    <p>This is a simple web app that predicts stock prices using an LSTM model.</p>
+
+    <form>
+        <label for="stockSymbol">Enter Stock Symbol:</label>
+        <input type="text" id="stockSymbol" name="stockSymbol" required>
+        <button type="button" onclick="getStockPrediction()">Get Prediction</button>
+    </form>
+
+    <div id="predictionResult"></div>
+
+    <script>
+        function getStockPrediction() {
+            console.log('Button clicked!');
+            var symbol = document.getElementById('stockSymbol').value;
+            console.log('Symbol Entered:',symbol)
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 'symbol': symbol }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Prediction response:', data);
+                    document.getElementById('predictionResult').innerText = `Predicted Price for ${data.symbol}: $${data.predicted_price.toFixed(2)}`;
+                })
+                .catch(error => {
+                    console.error('Error fetching stock prediction:', error);
+                });
+        }
+    </script>
+</body>
+</html>
